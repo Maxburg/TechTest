@@ -2,11 +2,21 @@
 
 public class ShowsRepository : IShowsRepository
 {
-    private LocalDbContext _localDbContext;
+    private readonly LocalDbContext _localDbContext;
 
     public ShowsRepository(LocalDbContext localDbContext)
     {
         _localDbContext = localDbContext;
+    }
+
+    public IEnumerable<Show> GetAllShows()
+    {
+        return _localDbContext.Shows.AsEnumerable();
+    }
+
+    public IEnumerable<Show> GetShowsByName(string name)
+    {
+        return _localDbContext.Shows.Where(x => x.Name.StartsWith(name));
     }
 
     public async Task<KeyValuePair<bool, string>> Save(IEnumerable<Show> shows)
@@ -17,7 +27,6 @@ public class ShowsRepository : IShowsRepository
             var dbShow = _localDbContext.Shows.FirstOrDefault(x => x.Id == show.Id);
             if (dbShow != null)
             {
-                dbShow.ShowGenres = show.ShowGenres;
                 dbShow.Summary = show.Summary;
                 dbShow.Premiered = show.Premiered;
                 dbShow.Name = show.Name;
@@ -26,12 +35,8 @@ public class ShowsRepository : IShowsRepository
             }
             _localDbContext.Add(show);
         }
-        var changes = _localDbContext.SaveChanges();
+        var changes = await _localDbContext.SaveChangesAsync();
 
-        if (changes == 0)
-        {
-            return new KeyValuePair<bool, string>(false, "Nothing has been saved.");
-        }
-        return new KeyValuePair<bool, string>(true, "Success!");
+        return changes == 0 ? new KeyValuePair<bool, string>(false, "Nothing has been saved.") : new KeyValuePair<bool, string>(true, "Success!");
     }
 }

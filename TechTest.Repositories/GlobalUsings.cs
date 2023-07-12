@@ -1,1 +1,2 @@
-﻿global using TechTest.Entities.Models;
+﻿global using Microsoft.EntityFrameworkCore;
+global using TechTest.Entities.Models;

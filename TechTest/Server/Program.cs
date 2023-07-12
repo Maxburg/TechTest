@@ -3,7 +3,13 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TechTest.Bll.Genres;
+using TechTest.Bll.ShowGenres;
 using TechTest.Entities.Models;
+using TechTest.Repositories.Genres;
+using TechTest.Repositories.ShowGenres;
+using TechTest.Repositories.Shows;
+using TechTest.Server.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +21,16 @@ builder.Services.AddDbContext<LocalDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDb"));
 });
+
+builder.Services.AddHttpClient();
+
+builder.Services.AddTransient<IGenresRepository, GenresRepository>();
+builder.Services.AddTransient<IShowsRepository, ShowsRepository>();
+builder.Services.AddTransient<IShowGenresRepository, ShowGenresRepository>();
+builder.Services.AddTransient<IBlGenres, BlGenres>();
+builder.Services.AddTransient<IBlShows, BlShows>();
+builder.Services.AddTransient<IBlShowGenres, BlShowGenres>();
+builder.Services.AddTransient<ITvMazeService, TvMazeService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

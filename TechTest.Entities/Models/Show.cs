@@ -14,7 +14,7 @@ public class Show
 
     public DateTime Premiered { get; set; }
 
-    public ICollection<ShowGenre> ShowGenres { get; set; }
+    public virtual ICollection<Genre> Genres { get; set; } = new List<Genre>();
 
     public bool AddedByUser { get; set; }
 }

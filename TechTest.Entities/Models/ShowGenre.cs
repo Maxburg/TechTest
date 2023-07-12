@@ -3,10 +3,10 @@
 public class ShowGenre
 {
     [ForeignKey("ShowId")]
-    public Show Show { get; set; }
+    public Show Show { get; set; } = new();
 
     [ForeignKey("GenreId")]
-    public Genre Genre { get; set; }
+    public Genre Genre { get; set; } = new();
 
     public int ShowId { get; set; }
 

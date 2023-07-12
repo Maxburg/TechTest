@@ -1,6 +1,4 @@
-﻿
-
-namespace TechTest.Server.Controllers;
+﻿namespace TechTest.Server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
@@ -17,44 +15,55 @@ public class ShowController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<ShowViewModel>> Get()
+    public IEnumerable<ShowViewModel> Get()
     {
-        // Get all Shows
+        var allShows = _blShows.GetAllShows();
+
+        var showViewModels = allShows.Select(show => new ShowViewModel()
+        {
+            Id = show.Id,
+            Name = show.Name,
+            Language = show.Language,
+            Premiered = show.Premiered,
+            Summary = show.Summary
+        })
+            .ToList();
+
+        return showViewModels;
     }
 
     [HttpGet]
-    public async Task<IEnumerable<ShowViewModel>> GetShowById(string name)
+    public IEnumerable<ShowViewModel> GetShowByName(string name)
     {
-        // Get show by name
+        var foundShows = _blShows.GetShowsByName(name);
+
+        var showViewModels = foundShows.Select(show => new ShowViewModel()
+        {
+            Id = show.Id,
+            Name = show.Name,
+            Language = show.Language,
+            Premiered = show.Premiered,
+            Summary = show.Summary
+        });
+
+        return showViewModels;
     }
 
     [HttpPost]
     public async Task<KeyValuePair<bool, string>> UpdateShows(IEnumerable<ShowViewModel> showViewModels)
     {
-        List<Show> showsToSave = new();
-        foreach (var showViewModel in showViewModels)
+        var showsToSave = showViewModels.Select(showViewModel => new Show()
         {
-            var show = new Show()
-            {
-                Id = showViewModel.Id,
-                Name = showViewModel.Name,
-                Premiered = showViewModel.Premiered,
-                Language = showViewModel.Language,
-                Summary = showViewModel.Summary
-            };
-            showsToSave.Add(show);
-        }
+            Id = showViewModel.Id,
+            Name = showViewModel.Name,
+            Premiered = showViewModel.Premiered,
+            Language = showViewModel.Language,
+            Summary = showViewModel.Summary
+        })
+            .ToList();
+
         var result = await _blShows.Save(showsToSave);
+
         return result;
-    }
-
-    [HttpPost]
-    public async Task<KeyValuePair<bool, string>> UpdateShowsFromSource()
-    {
-        // Call to TvMaze
-
-        // Update shows in db
-
-        // return
     }
 }

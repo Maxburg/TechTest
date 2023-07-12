@@ -7,5 +7,5 @@ public class Genre
 
     public string Name { get; set; } = string.Empty;
 
-    public ICollection<ShowGenre> ShowGenres { get; set; }
+    public virtual ICollection<Show> Shows { get; set; } = new List<Show>();
 }
